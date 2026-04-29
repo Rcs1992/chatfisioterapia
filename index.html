@@ -2,19 +2,24 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassConnect - Fórum estilo Reddit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ClassConnect — Fórum de Perguntas</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: #dae0e6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
             padding: 20px;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
         }
+        /* Header */
         .header {
             background: white;
             border-radius: 16px;
@@ -36,10 +41,10 @@
         .user-area {
             display: flex;
             gap: 8px;
-            align-items: center;
             background: #f6f7f8;
             padding: 6px 14px;
             border-radius: 40px;
+            align-items: center;
         }
         .user-name {
             border: 1px solid #ccc;
@@ -55,6 +60,7 @@
             border-radius: 20px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.1s;
         }
         button:hover { background: #005a9e; }
         .btn-outline {
@@ -62,6 +68,7 @@
             border: 1px solid #0079d3;
             color: #0079d3;
         }
+        /* Tabs */
         .tab-bar {
             display: flex;
             gap: 8px;
@@ -79,6 +86,7 @@
             background: #0079d3;
             color: white;
         }
+        /* Busca */
         .search-bar {
             background: white;
             border-radius: 24px;
@@ -94,6 +102,42 @@
             outline: none;
             font-size: 1rem;
         }
+        /* Caixa de boas-vindas fixa */
+        .welcome-card {
+            background: #e9f5ff;
+            border-left: 5px solid #0079d3;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .welcome-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #1a1a1b;
+        }
+        .welcome-card p {
+            margin-bottom: 12px;
+            line-height: 1.4;
+            color: #2c3e4e;
+        }
+        .welcome-card ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        .welcome-card li {
+            margin-bottom: 6px;
+        }
+        .welcome-card strong {
+            color: #0079d3;
+        }
+        .welcome-card .highlight {
+            background: #fff3bf;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        /* Cards de pergunta */
         .ask-card {
             background: white;
             border-radius: 16px;
@@ -169,7 +213,6 @@
             font-size: 0.7rem;
             color: #787c7e;
             margin-bottom: 8px;
-            align-items: center;
         }
         .admin-tag {
             background: #ff450022;
@@ -248,13 +291,14 @@
         @media (max-width: 700px) {
             body { padding: 10px; }
             .question-title { font-size: 1.1rem; }
+            .welcome-card { padding: 16px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo"><h1>📚 ClassConnect</h1></div>
+        <div class="logo"><h1>📚 ClassConnect Fórum</h1></div>
         <div class="user-area">
             <span>👤</span>
             <input type="text" id="userNameInput" placeholder="Seu nome" class="user-name">
@@ -273,22 +317,53 @@
         <input type="text" id="searchInput" placeholder="Buscar por título, texto ou autor...">
     </div>
 
+    <!-- MENSAGEM DE BOAS-VINDAS FIXA -->
+    <div class="welcome-card">
+        <h2>👋 Olá, seja bem-vindo(a) ao Fórum ClassConnect!</h2>
+        <p>Este é um espaço colaborativo para tirar dúvidas, compartilhar conhecimento e acompanhar discussões organizadas. Funciona como um <strong>fórum estilo Reddit</strong>, onde alunos podem perguntar e os administradores organizam o conteúdo.</p>
+        
+        <p><strong>📌 Como funciona?</strong></p>
+        <ul>
+            <li><strong>Identifique-se</strong> no campo superior direito (nome de usuário).</li>
+            <li><strong>Faça sua pergunta</strong> no formulário abaixo da busca. Todos verão seu nome e poderão responder.</li>
+            <li><strong>Responda a qualquer pergunta</strong> usando o campo "Responder" dentro do card.</li>
+            <li><strong>Busque</strong> por palavras-chave no campo de busca – o filtro é em tempo real.</li>
+            <li><strong>Abas "Ativas" e "Arquivo"</strong>: as perguntas resolvidas ou antigas são movidas pelos administradores para o arquivo. Você pode acessar ambas.</li>
+        </ul>
+        
+        <p><strong>👑 Para os administradores (senha: admin123):</strong></p>
+        <ul>
+            <li>Clique em <span class="highlight">"Modo Admin"</span> e digite a senha. Aparecerão controles extras:</li>
+            <li>✏️ <strong>Editar categoria</strong> da pergunta (ex: "Dúvida", "Sugestão", "Urgente").</li>
+            <li>📦 <strong>Arquivar/Restaurar</strong> perguntas – move entre as abas.</li>
+            <li>📎 <strong>Responder com anexos</strong> (imagens, PDFs, slides) – os arquivos ficam públicos no Drive.</li>
+            <li>🔹 As respostas do admin aparecem com fundo laranja e selo "ADMIN".</li>
+        </ul>
+        
+        <p><strong>💡 Dicas de navegação:</strong><br>
+        - Use a <strong>busca</strong> para encontrar perguntas já respondidas.<br>
+        - A aba <strong>"Arquivo"</strong> guarda discussões antigas (não se perde nada).<br>
+        - Ao responder, você pode incluir links ou texto formatado (apenas texto simples por segurança).</p>
+        
+        <p><em>Participe com respeito. Vamos construir uma comunidade de aprendizado! 🚀</em></p>
+    </div>
+
     <div id="askCardContainer" class="ask-card">
-        <h3>➕ Nova pergunta</h3>
-        <input type="text" id="questionTitle" placeholder="Título">
-        <textarea id="questionBody" placeholder="Descreva sua dúvida..."></textarea>
-        <button id="submitQuestionBtn">Publicar</button>
+        <h3>➕ Faça sua pergunta</h3>
+        <input type="text" id="questionTitle" placeholder="Título da pergunta">
+        <textarea id="questionBody" placeholder="Descreva sua dúvida em detalhes..."></textarea>
+        <button id="submitQuestionBtn">Publicar Pergunta</button>
     </div>
 
     <div id="questionsContainer">
-        <div class="loading">📡 Carregando...</div>
+        <div class="loading">📡 Carregando perguntas...</div>
     </div>
-    <footer>🔐 Admin: categoriza, arquiva e responde com anexos (imagens/PDFs)</footer>
+    <footer>🔐 Administradores: categorizam, arquivam e respondem com anexos (Drive).</footer>
 </div>
 
 <script>
-    // CONFIGURAÇÃO
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUIR
+    // ================= CONFIGURAÇÃO =================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUA PELA SUA URL
     const ADMIN_PASSWORD = "admin123";
 
     let allQuestions = [];
@@ -320,6 +395,7 @@
         });
     });
 
+    // Busca
     searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.toLowerCase();
         renderFilteredQuestions();
@@ -341,7 +417,7 @@
     }
     saveNameBtn.addEventListener("click", saveUserName);
 
-    // Admin mode
+    // Modo Admin
     function enableAdminMode() {
         const pwd = prompt("🔑 Senha de Administrador:");
         if (pwd === ADMIN_PASSWORD) {
@@ -368,7 +444,7 @@
         }
     }
 
-    // API
+    // ========== API (CORS-safe com Base64) ==========
     async function callAPI(action, data = {}, file = null) {
         try {
             const formData = new URLSearchParams();
@@ -392,7 +468,7 @@
             return await response.json();
         } catch (error) {
             console.error("API error:", error);
-            alert("Erro: " + error.message);
+            alert("❌ Erro: " + error.message);
             return { success: false, error: error.message };
         }
     }
@@ -405,6 +481,7 @@
         });
     }
 
+    // ========== Dados ==========
     async function fetchAllData() {
         const res = await callAPI("loadData");
         if (res.success && res.data) {
@@ -460,9 +537,10 @@
         questionsDiv.innerHTML = '<div class="loading">🔄 Atualizando...</div>';
         const ok = await fetchAllData();
         if (ok) renderFilteredQuestions();
-        else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados. Verifique URL do script.</div>';
+        else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados. Verifique a URL do script.</div>';
     }
 
+    // ========== Renderização com filtros ==========
     function filterQuestions(questions) {
         let filtered = questions.filter(q => {
             if (currentTab === "active") return q.status !== "arquivado";
