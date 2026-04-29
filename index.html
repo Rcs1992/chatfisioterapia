@@ -2,42 +2,32 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ClassConnect — Fórum estilo Reddit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassConnect - Fórum estilo Reddit</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #dae0e6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #dae0e6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 20px;
         }
-
         .container {
             max-width: 1000px;
             margin: 0 auto;
         }
-
-        /* Header */
         .header {
-            background-color: white;
+            background: white;
             border-radius: 16px;
             padding: 12px 20px;
             margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
             justify-content: space-between;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            align-items: center;
             border: 1px solid #ccc;
         }
         .logo h1 {
             font-size: 1.8rem;
-            font-weight: 700;
             background: linear-gradient(135deg, #1e3c72, #2b4c8a);
             background-clip: text;
             -webkit-background-clip: text;
@@ -45,9 +35,8 @@
         }
         .user-area {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
-            flex-wrap: wrap;
             background: #f6f7f8;
             padding: 6px 14px;
             border-radius: 40px;
@@ -58,7 +47,7 @@
             border-radius: 20px;
             background: white;
         }
-        button, .btn {
+        button {
             background: #0079d3;
             border: none;
             color: white;
@@ -66,22 +55,13 @@
             border-radius: 20px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.1s;
-            font-size: 0.85rem;
         }
-        button:hover {
-            background: #005a9e;
-        }
+        button:hover { background: #005a9e; }
         .btn-outline {
             background: transparent;
             border: 1px solid #0079d3;
             color: #0079d3;
         }
-        .btn-outline:hover {
-            background: #e5f4ff;
-        }
-
-        /* Tabs */
         .tab-bar {
             display: flex;
             gap: 8px;
@@ -94,21 +74,17 @@
             color: #1a1a1b;
             font-weight: 600;
             padding: 8px 20px;
-            border-radius: 40px;
         }
         .tab-btn.active {
             background: #0079d3;
             color: white;
         }
-
-        /* Search */
         .search-bar {
             background: white;
             border-radius: 24px;
             padding: 12px 20px;
             margin-bottom: 20px;
             display: flex;
-            align-items: center;
             gap: 12px;
             border: 1px solid #ccc;
         }
@@ -117,13 +93,7 @@
             border: none;
             outline: none;
             font-size: 1rem;
-            padding: 8px 0;
         }
-        .search-bar i {
-            color: #878a8c;
-        }
-
-        /* Card de nova pergunta */
         .ask-card {
             background: white;
             border-radius: 16px;
@@ -136,7 +106,6 @@
             border: 1px solid #ccc;
             border-radius: 12px;
             padding: 12px;
-            font-size: 0.9rem;
             margin-bottom: 12px;
             font-family: inherit;
         }
@@ -144,8 +113,6 @@
             min-height: 90px;
             resize: vertical;
         }
-
-        /* Card de pergunta (Reddit style) */
         .question-card {
             background: white;
             border-radius: 16px;
@@ -159,7 +126,6 @@
         .question-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: #1a1a1b;
             margin-bottom: 8px;
         }
         .question-meta {
@@ -175,12 +141,10 @@
             padding: 2px 10px;
             border-radius: 30px;
             font-size: 0.7rem;
-            font-weight: 500;
         }
         .question-body {
             padding: 0 20px 12px 20px;
             color: #2c3e4e;
-            font-size: 0.95rem;
             line-height: 1.4;
         }
         .responses-section {
@@ -194,7 +158,6 @@
             padding: 12px 16px;
             margin-bottom: 12px;
             border-left: 3px solid #0079d3;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
         }
         .response-admin {
             border-left-color: #ff4500;
@@ -261,12 +224,6 @@
             flex-wrap: wrap;
             align-items: center;
         }
-        .admin-cta input {
-            width: 150px;
-            padding: 6px;
-            border-radius: 30px;
-            border: 1px solid #ccc;
-        }
         .small-btn {
             padding: 4px 12px;
             font-size: 0.7rem;
@@ -317,9 +274,9 @@
     </div>
 
     <div id="askCardContainer" class="ask-card">
-        <h3 style="margin-bottom: 12px;">➕ Nova pergunta</h3>
+        <h3>➕ Nova pergunta</h3>
         <input type="text" id="questionTitle" placeholder="Título">
-        <textarea id="questionBody" placeholder="Escreva sua dúvida..."></textarea>
+        <textarea id="questionBody" placeholder="Descreva sua dúvida..."></textarea>
         <button id="submitQuestionBtn">Publicar</button>
     </div>
 
@@ -330,15 +287,15 @@
 </div>
 
 <script>
-    // ========== CONFIGURAÇÃO ==========
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec";  // ⚠️ SUBSTITUA
+    // CONFIGURAÇÃO
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUIR
     const ADMIN_PASSWORD = "admin123";
 
     let allQuestions = [];
     let allResponses = [];
     let currentUserName = "";
     let isAdminMode = false;
-    let currentTab = "active";    // active / archived
+    let currentTab = "active";
     let searchQuery = "";
 
     // DOM
@@ -363,13 +320,12 @@
         });
     });
 
-    // Busca ao digitar
     searchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value.toLowerCase();
         renderFilteredQuestions();
     });
 
-    // Nome
+    // Nome do usuário
     function loadStoredName() {
         const saved = localStorage.getItem("classconnect_user");
         if (saved) { currentUserName = saved; userNameInput.value = saved; }
@@ -385,7 +341,7 @@
     }
     saveNameBtn.addEventListener("click", saveUserName);
 
-    // Admin
+    // Admin mode
     function enableAdminMode() {
         const pwd = prompt("🔑 Senha de Administrador:");
         if (pwd === ADMIN_PASSWORD) {
@@ -393,7 +349,6 @@
             localStorage.setItem("classconnect_admin", "true");
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
             adminToggleBtn.style.background = "#ff4500";
-            adminToggleBtn.style.color = "white";
             renderFilteredQuestions();
         } else alert("Senha incorreta!");
     }
@@ -402,7 +357,6 @@
         localStorage.removeItem("classconnect_admin");
         adminToggleBtn.textContent = "🔐 Modo Admin";
         adminToggleBtn.style.background = "";
-        adminToggleBtn.style.color = "";
         renderFilteredQuestions();
     }
     adminToggleBtn.addEventListener("click", () => isAdminMode ? disableAdminMode() : enableAdminMode());
@@ -411,73 +365,81 @@
             isAdminMode = true;
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
             adminToggleBtn.style.background = "#ff4500";
-            adminToggleBtn.style.color = "white";
         }
     }
 
-    // ========== API ==========
+    // API
     async function callAPI(action, data = {}, file = null) {
-    try {
-        const formData = new URLSearchParams();
-        formData.append("action", action);
-        
-        if (file) {
-            console.log("Preparando upload do arquivo:", file.name, file.type, file.size);
-            const base64 = await fileToBase64(file);
-            console.log("Base64 gerado, tamanho:", base64.length);
-            formData.append("fileName", file.name);
-            formData.append("contentType", file.type);
-            formData.append("fileData", base64);
+        try {
+            const formData = new URLSearchParams();
+            formData.append("action", action);
+            if (file) {
+                const base64 = await fileToBase64(file);
+                formData.append("fileName", file.name);
+                formData.append("contentType", file.type);
+                formData.append("fileData", base64);
+            }
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) formData.append(key, data[key]);
+            }
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error("API error:", error);
+            alert("Erro: " + error.message);
+            return { success: false, error: error.message };
         }
-        
-        for (let key in data) {
-            if (data.hasOwnProperty(key)) formData.append(key, data[key]);
-        }
-        
-        console.log("Enviando requisição para:", SCRIPT_URL);
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            mode: "cors",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData
+    }
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
         });
-        
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const result = await response.json();
-        console.log("Resposta da API:", result);
-        return result;
-    } catch (error) {
-        console.error("Erro na API:", error);
-        alert("❌ Erro: " + error.message);
-        return { success: false, error: error.message };
     }
-}
 
-async function addResponseWithAttachment(questionId, text, isAdmin, file) {
-    let attachmentUrl = "";
-    if (file) {
-        console.log("Fazendo upload do arquivo...");
-        const uploadRes = await callAPI("uploadFile", {}, file);
-        if (uploadRes.success) {
-            attachmentUrl = uploadRes.url;
-            console.log("Upload OK, URL:", attachmentUrl);
-        } else {
-            console.error("Upload falhou:", uploadRes.error);
-            alert("Falha no upload do anexo: " + (uploadRes.error || "erro desconhecido"));
-            // continua sem anexo
+    async function fetchAllData() {
+        const res = await callAPI("loadData");
+        if (res.success && res.data) {
+            allQuestions = res.data.questions || [];
+            allResponses = res.data.responses || [];
+            return true;
         }
+        return false;
     }
-    const res = await callAPI("addResponse", {
-        questionId, author: currentUserName, text: text.trim(),
-        isAdmin: isAdmin ? "true" : "false",
-        attachment: attachmentUrl
-    });
-    if (res.success) {
-        await refreshAndRender();
-    } else {
-        alert("Erro ao salvar resposta: " + (res.error || ""));
+
+    async function addNewQuestion(title, body, author) {
+        if (!title.trim() || !body.trim()) return alert("Preencha título e conteúdo.");
+        const res = await callAPI("addQuestion", { title, body, author, category: "Geral", status: "ativo" });
+        if (res.success) {
+            await refreshAndRender();
+            titleInput.value = "";
+            bodyInput.value = "";
+        } else alert("Erro ao publicar: " + (res.error || ""));
     }
-}
+
+    async function addResponseWithAttachment(questionId, text, isAdmin, file) {
+        let attachmentUrl = "";
+        if (file) {
+            const uploadRes = await callAPI("uploadFile", {}, file);
+            if (uploadRes.success) attachmentUrl = uploadRes.url;
+            else alert("Falha no upload: " + (uploadRes.error || ""));
+        }
+        const res = await callAPI("addResponse", {
+            questionId, author: currentUserName, text: text.trim(),
+            isAdmin: isAdmin ? "true" : "false",
+            attachment: attachmentUrl
+        });
+        if (res.success) await refreshAndRender();
+        else alert("Erro ao salvar resposta: " + (res.error || ""));
+    }
 
     async function updateCategory(questionId, newCategory) {
         if (!isAdminMode) return;
@@ -498,17 +460,16 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
         questionsDiv.innerHTML = '<div class="loading">🔄 Atualizando...</div>';
         const ok = await fetchAllData();
         if (ok) renderFilteredQuestions();
-        else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados.</div>';
+        else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados. Verifique URL do script.</div>';
     }
 
-    // Filtro por busca + aba
     function filterQuestions(questions) {
         let filtered = questions.filter(q => {
             if (currentTab === "active") return q.status !== "arquivado";
             else return q.status === "arquivado";
         });
         if (searchQuery) {
-            filtered = filtered.filter(q => 
+            filtered = filtered.filter(q =>
                 q.title.toLowerCase().includes(searchQuery) ||
                 q.body.toLowerCase().includes(searchQuery) ||
                 (q.author && q.author.toLowerCase().includes(searchQuery))
@@ -548,9 +509,9 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
                         <div class="question-meta">
                             <span>👤 ${escapeHtml(q.author)}</span>
                             <span>🕒 ${formatDate(q.timestamp)}</span>
-                            ${categoryHtml}
                             ${archiveBtn}
                         </div>
+                        ${categoryHtml}
                     </div>
                     <div class="question-body">${escapeHtml(q.body).replace(/\n/g, '<br>')}</div>
                     <div class="responses-section">
@@ -569,7 +530,7 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
                             <div class="response-input-group">
                                 <input type="text" class="resp-text" data-id="${q.id}" placeholder="Escreva uma resposta...">
                                 <button class="resp-btn" data-id="${q.id}" data-admin="false">💬 Responder</button>
-                                ${isAdminMode ? `<button class="resp-btn" data-id="${q.id}" data-admin="true" style="background:#ff4500;">👑 Admin (sem anexo)</button>` : ''}
+                                ${isAdminMode ? `<button class="resp-btn" data-id="${q.id}" data-admin="true" style="background:#ff4500;">👑 Admin</button>` : ''}
                             </div>
                             ${isAdminMode ? `
                                 <div class="file-upload-area">
@@ -587,24 +548,19 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
         attachDynamicEvents();
     }
 
-    // Delegação de eventos para botões dinâmicos
     function attachDynamicEvents() {
-        // Salvar categoria
         document.querySelectorAll('.save-cat-btn').forEach(btn => {
             btn.removeEventListener('click', saveCategoryHandler);
             btn.addEventListener('click', saveCategoryHandler);
         });
-        // Arquivar/Restaurar
         document.querySelectorAll('.archive-toggle-btn').forEach(btn => {
             btn.removeEventListener('click', archiveHandler);
             btn.addEventListener('click', archiveHandler);
         });
-        // Responder simples
         document.querySelectorAll('.resp-btn').forEach(btn => {
             btn.removeEventListener('click', responseHandler);
             btn.addEventListener('click', responseHandler);
         });
-        // Responder com anexo
         document.querySelectorAll('.resp-file-btn').forEach(btn => {
             btn.removeEventListener('click', responseFileHandler);
             btn.addEventListener('click', responseFileHandler);
@@ -615,9 +571,7 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
         const btn = e.currentTarget;
         const qid = btn.dataset.id;
         const input = document.querySelector(`.cat-input[data-id="${qid}"]`);
-        if (input) {
-            await updateCategory(qid, input.value);
-        }
+        if (input) await updateCategory(qid, input.value);
     }
 
     async function archiveHandler(e) {
@@ -655,7 +609,6 @@ async function addResponseWithAttachment(questionId, text, isAdmin, file) {
         if (fileInput) fileInput.value = "";
     }
 
-    // Enviar nova pergunta
     submitBtn.addEventListener("click", () => {
         if (!currentUserName) return alert("Identifique-se antes.");
         addNewQuestion(titleInput.value, bodyInput.value, currentUserName);
