@@ -52,7 +52,11 @@
             cursor: pointer;
             transition: 0.1s;
         }
-        button:hover { background: #005a9e; }
+        button:hover:not(:disabled) { background: #005a9e; }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .btn-outline {
             background: transparent;
             border: 1px solid #0079d3;
@@ -328,12 +332,11 @@
         <p>Espaço colaborativo para dúvidas e discussões. Identifique-se abaixo, faça sua pergunta e participe!</p>
         <ul>
             <li><strong>Alunos:</strong> pergunte e responda livremente.</li>
-            <li><strong>Administradores:</strong> após ativar o modo admin, você pode categorizar, arquivar e responder com anexos (imagens, PDFs).</li>
+            <li><strong>Administradores:</strong> após ativar o modo admin (senha: admin123), você pode categorizar, arquivar e responder com anexos (imagens, PDFs).</li>
             <li>Use a <strong>busca</strong> e as <strong>abas</strong> (Ativas / Arquivo) para navegar.</li>
         </ul>
     </div>
 
-    <!-- Card de nova pergunta com identificação integrada -->
     <div id="askCardContainer" class="ask-card">
         <h3>➕ Faça sua pergunta</h3>
         <div class="identificacao-area">
@@ -355,7 +358,7 @@
 
 <script>
     // ================= CONFIGURAÇÃO =================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUA
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"
     const ADMIN_PASSWORD = "admin123";
 
     let allQuestions = [];
@@ -394,38 +397,40 @@
         renderFilteredQuestions();
     });
 
-    // Nome do usuário (agora salvo e exibido)
-    function loadStoredName() {
-        const saved = localStorage.getItem("classconnect_user");
-        if (saved) {
-            currentUserName = saved;
-            userNameInput.value = saved;
-            currentUserDisplay.textContent = `✅ ${saved}`;
-        } else {
-            currentUserName = "";
-            userNameInput.value = "";
-            currentUserDisplay.textContent = "Não identificado";
-        }
-    }
-    function saveUserName() {
+    // Nome do usuário (com proteção contra cliques múltiplos)
+    let isSavingName = false;
+    async function saveUserName() {
+        if (isSavingName) return;
         let newName = userNameInput.value.trim();
         if (newName === "") {
             alert("Digite um nome para identificar-se.");
             return;
         }
-        currentUserName = newName;
-        localStorage.setItem("classconnect_user", currentUserName);
-        currentUserDisplay.textContent = `✅ ${currentUserName}`;
-        renderFilteredQuestions();
-        alert(`Identificado como ${currentUserName}`);
+        isSavingName = true;
+        const originalText = saveUserNameBtn.textContent;
+        saveUserNameBtn.textContent = "⏳ Salvando...";
+        saveUserNameBtn.disabled = true;
+        try {
+            currentUserName = newName;
+            localStorage.setItem("classconnect_user", currentUserName);
+            currentUserDisplay.textContent = `✅ ${currentUserName}`;
+            renderFilteredQuestions();
+            alert(`Identificado como ${currentUserName}`);
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao salvar nome.");
+        } finally {
+            saveUserNameBtn.textContent = originalText;
+            saveUserNameBtn.disabled = false;
+            isSavingName = false;
+        }
     }
     saveUserNameBtn.addEventListener("click", saveUserName);
-    // Permitir pressionar Enter no campo nome
     userNameInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") saveUserName();
     });
 
-    // Modo Admin (mantido no header)
+    // Modo Admin
     function enableAdminMode() {
         const pwd = prompt("🔑 Senha de Administrador:");
         if (pwd === ADMIN_PASSWORD) {
@@ -479,8 +484,7 @@
             return await response.json();
         } catch (error) {
             console.error("API error:", error);
-            alert("❌ Erro: " + error.message);
-            return { success: false, error: error.message };
+            throw error;
         }
     }
     function fileToBase64(file) {
@@ -503,52 +507,118 @@
         return false;
     }
 
+    let isPublishing = false;
     async function addNewQuestion(title, body, author) {
+        if (isPublishing) return;
         if (!title.trim() || !body.trim()) return alert("Preencha título e conteúdo.");
-        const res = await callAPI("addQuestion", { title, body, author, category: "Geral", status: "ativo" });
-        if (res.success) {
-            await refreshAndRender();
-            titleInput.value = "";
-            bodyInput.value = "";
-        } else alert("Erro ao publicar: " + (res.error || ""));
-    }
-
-    async function addResponseWithAttachment(questionId, text, isAdmin, file) {
-        let attachmentUrl = "";
-        if (file) {
-            const uploadRes = await callAPI("uploadFile", {}, file);
-            if (uploadRes.success) attachmentUrl = uploadRes.url;
-            else alert("Falha no upload: " + (uploadRes.error || ""));
+        isPublishing = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "⏳ Publicando...";
+        submitBtn.disabled = true;
+        try {
+            const res = await callAPI("addQuestion", { title, body, author, category: "Geral", status: "ativo" });
+            if (res.success) {
+                await refreshAndRender();
+                titleInput.value = "";
+                bodyInput.value = "";
+            } else {
+                alert("Erro ao publicar: " + (res.error || ""));
+            }
+        } catch (err) {
+            alert("Erro de conexão: " + err.message);
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            isPublishing = false;
         }
-        const res = await callAPI("addResponse", {
-            questionId, author: currentUserName, text: text.trim(),
-            isAdmin: isAdmin ? "true" : "false",
-            attachment: attachmentUrl
-        });
-        if (res.success) await refreshAndRender();
-        else alert("Erro ao salvar resposta: " + (res.error || ""));
     }
 
-    async function updateCategory(questionId, newCategory) {
+    async function addResponseWithAttachment(questionId, text, isAdmin, file, buttonElement) {
+        if (!buttonElement) return;
+        if (buttonElement.disabled) return;
+        buttonElement.disabled = true;
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = "⏳ Enviando...";
+        let attachmentUrl = "";
+        try {
+            if (file) {
+                const uploadRes = await callAPI("uploadFile", {}, file);
+                if (uploadRes.success) attachmentUrl = uploadRes.url;
+                else alert("Falha no upload: " + (uploadRes.error || ""));
+            }
+            const res = await callAPI("addResponse", {
+                questionId, author: currentUserName, text: text.trim(),
+                isAdmin: isAdmin ? "true" : "false",
+                attachment: attachmentUrl
+            });
+            if (res.success) {
+                await refreshAndRender();
+                // limpar campos após sucesso
+                const textInput = document.querySelector(`.resp-text[data-id="${questionId}"]`);
+                if (textInput) textInput.value = "";
+                const fileTextInput = document.querySelector(`.resp-file-text[data-id="${questionId}"]`);
+                if (fileTextInput) fileTextInput.value = "";
+                const fileInput = document.querySelector(`.resp-file[data-id="${questionId}"]`);
+                if (fileInput) fileInput.value = "";
+            } else {
+                alert("Erro ao salvar resposta: " + (res.error || ""));
+            }
+        } catch (err) {
+            alert("Erro: " + err.message);
+        } finally {
+            buttonElement.textContent = originalText;
+            buttonElement.disabled = false;
+        }
+    }
+
+    async function updateCategory(questionId, newCategory, buttonElement) {
+        if (!buttonElement) return;
+        if (buttonElement.disabled) return;
         if (!isAdminMode) return;
-        const res = await callAPI("updateCategory", { questionId, category: newCategory });
-        if (res.success) await refreshAndRender();
-        else alert("Erro ao atualizar categoria");
+        buttonElement.disabled = true;
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = "⏳";
+        try {
+            const res = await callAPI("updateCategory", { questionId, category: newCategory });
+            if (res.success) await refreshAndRender();
+            else alert("Erro ao atualizar categoria");
+        } catch (err) {
+            alert("Erro: " + err.message);
+        } finally {
+            buttonElement.textContent = originalText;
+            buttonElement.disabled = false;
+        }
     }
 
-    async function archiveQuestion(questionId, currentStatus) {
+    async function archiveQuestion(questionId, currentStatus, buttonElement) {
+        if (!buttonElement) return;
+        if (buttonElement.disabled) return;
         if (!isAdminMode) return alert("Apenas admin.");
-        const newStatus = currentStatus === "ativo" ? "arquivado" : "ativo";
-        const res = await callAPI("updateStatus", { questionId, status: newStatus });
-        if (res.success) await refreshAndRender();
-        else alert("Erro ao alterar status");
+        buttonElement.disabled = true;
+        const originalText = buttonElement.textContent;
+        buttonElement.textContent = "⏳";
+        try {
+            const newStatus = currentStatus === "ativo" ? "arquivado" : "ativo";
+            const res = await callAPI("updateStatus", { questionId, status: newStatus });
+            if (res.success) await refreshAndRender();
+            else alert("Erro ao alterar status");
+        } catch (err) {
+            alert("Erro: " + err.message);
+        } finally {
+            buttonElement.textContent = originalText;
+            buttonElement.disabled = false;
+        }
     }
 
     async function refreshAndRender() {
         questionsDiv.innerHTML = '<div class="loading">🔄 Atualizando...</div>';
-        const ok = await fetchAllData();
-        if (ok) renderFilteredQuestions();
-        else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados. Verifique a URL do script.</div>';
+        try {
+            const ok = await fetchAllData();
+            if (ok) renderFilteredQuestions();
+            else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados. Verifique a URL do script.</div>';
+        } catch (err) {
+            questionsDiv.innerHTML = '<div class="loading">⚠️ Erro de conexão. Tente recarregar.</div>';
+        }
     }
 
     // ========== Renderização com filtros ==========
@@ -660,14 +730,16 @@
         const btn = e.currentTarget;
         const qid = btn.dataset.id;
         const input = document.querySelector(`.cat-input[data-id="${qid}"]`);
-        if (input) await updateCategory(qid, input.value);
+        if (input && input.value.trim() !== "") {
+            await updateCategory(qid, input.value, btn);
+        }
     }
 
     async function archiveHandler(e) {
         const btn = e.currentTarget;
         const qid = btn.dataset.id;
         const status = btn.dataset.status;
-        await archiveQuestion(qid, status);
+        await archiveQuestion(qid, status, btn);
     }
 
     async function responseHandler(e) {
@@ -679,8 +751,7 @@
         const text = input.value.trim();
         if (!text) return alert("Digite sua resposta.");
         if (!currentUserName) return alert("Identifique-se primeiro (campo de nome ao lado de 'Fazer pergunta').");
-        await addResponseWithAttachment(qid, text, isAdmin, null);
-        input.value = "";
+        await addResponseWithAttachment(qid, text, isAdmin, null, btn);
     }
 
     async function responseFileHandler(e) {
@@ -693,9 +764,7 @@
         if (!text && !file) return alert("Digite um texto ou selecione um arquivo.");
         if (!currentUserName) return alert("Identifique-se primeiro.");
         if (file && file.size > 2 * 1024 * 1024) return alert("Máximo 2MB.");
-        await addResponseWithAttachment(qid, text, true, file);
-        if (textInput) textInput.value = "";
-        if (fileInput) fileInput.value = "";
+        await addResponseWithAttachment(qid, text, true, file, btn);
     }
 
     submitBtn.addEventListener("click", () => {
@@ -714,6 +783,19 @@
         if (!ts) return "agora";
         const d = new Date(ts);
         return isNaN(d.getTime()) ? ts : d.toLocaleString('pt-BR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function loadStoredName() {
+        const saved = localStorage.getItem("classconnect_user");
+        if (saved) {
+            currentUserName = saved;
+            userNameInput.value = saved;
+            currentUserDisplay.textContent = `✅ ${saved}`;
+        } else {
+            currentUserName = "";
+            userNameInput.value = "";
+            currentUserDisplay.textContent = "Não identificado";
+        }
     }
 
     async function init() {
