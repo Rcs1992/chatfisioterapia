@@ -22,7 +22,6 @@
             margin: 0 auto;
         }
 
-        /* Header e perfil */
         .header {
             background: white;
             border-radius: 28px;
@@ -109,7 +108,6 @@
             font-weight: bold;
         }
 
-        /* cards de pergunta */
         .ask-card, .question-card {
             background: white;
             border-radius: 24px;
@@ -296,7 +294,6 @@
         </div>
     </div>
 
-    <!-- Card de nova pergunta -->
     <div class="ask-card">
         <h3 style="margin-bottom: 12px;">➕ Faça sua pergunta</h3>
         <div class="form-group">
@@ -308,7 +305,6 @@
         <button id="submitQuestionBtn">📢 Publicar Pergunta</button>
     </div>
 
-    <!-- Listagem de perguntas -->
     <div id="questionsContainer">
         <div class="loading">📡 Carregando perguntas...</div>
     </div>
@@ -316,20 +312,18 @@
 </div>
 
 <script>
-    // ------------------- CONFIGURAÇÃO -------------------
-    // ⚠️ ATENÇÃO: Substitua pela URL do seu Google Apps Script Web App (após implantar)
-    // Exemplo: "https://script.google.com/macros/s/SEU_ID/exec"
+    // ================= CONFIGURAÇÃO =================
+    // ⚠️ Substitua pela URL do seu Google Apps Script (Web App)
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; 
-    // ⚠️ Para testar localmente sem backend, o sistema mostra erro. Substitua pela URL real.
+    const ADMIN_PASSWORD = "admin123";
     
     // Estado global
-    let allQuestions = [];      // { id, title, body, author, timestamp, category }
-    let allResponses = [];      // { id, questionId, author, text, timestamp, isAdmin }
+    let allQuestions = [];
+    let allResponses = [];
     let currentUserName = "";
-    let isAdminMode = false;    // token local, apenas front-end para mostrar controles extras
-    let adminPassword = "admin123";  // senha simples (mude se quiser)
+    let isAdminMode = false;
     
-    // Elementos
+    // Elementos DOM
     const questionsDiv = document.getElementById("questionsContainer");
     const userNameInput = document.getElementById("userNameInput");
     const saveNameBtn = document.getElementById("saveUserNameBtn");
@@ -338,7 +332,7 @@
     const questionTitle = document.getElementById("questionTitle");
     const questionBody = document.getElementById("questionBody");
 
-    // Carregar nome salvo
+    // ========== Nome do usuário ==========
     function loadStoredName() {
         const saved = localStorage.getItem("classconnect_user");
         if (saved) {
@@ -354,15 +348,15 @@
         if (newName === "") newName = "Anônimo";
         currentUserName = newName;
         localStorage.setItem("classconnect_user", currentUserName);
-        renderQuestions(); // re-renderiza nomes
+        renderQuestions();
         alert(`Identificado como ${currentUserName}`);
     }
     saveNameBtn.addEventListener("click", saveUserName);
     
-    // Admin mode
+    // ========== Modo Admin ==========
     function enableAdminMode() {
         const pwd = prompt("🔑 Digite a senha de Administrador:");
-        if (pwd === adminPassword) {
+        if (pwd === ADMIN_PASSWORD) {
             isAdminMode = true;
             localStorage.setItem("classconnect_admin", "true");
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
@@ -383,11 +377,8 @@
         renderQuestions();
     }
     adminToggleBtn.addEventListener("click", () => {
-        if (isAdminMode) {
-            disableAdminMode();
-        } else {
-            enableAdminMode();
-        }
+        if (isAdminMode) disableAdminMode();
+        else enableAdminMode();
     });
     function checkStoredAdmin() {
         if (localStorage.getItem("classconnect_admin") === "true") {
@@ -398,27 +389,33 @@
         }
     }
     
-    // ---------- API CALLS para Google Apps Script ----------
+    // ========== API CALL (CORS-safe) ==========
     async function callAPI(action, data = {}) {
         try {
-            const payload = { action, ...data };
+            const formData = new URLSearchParams();
+            formData.append("action", action);
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    formData.append(key, data[key]);
+                }
+            }
             const response = await fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const result = await response.json();
             return result;
         } catch (error) {
             console.error("Erro na API:", error);
-            alert("❌ Erro ao conectar com o Google Sheets. Verifique a URL do Apps Script e se implantou corretamente.\n" + error.message);
+            alert("❌ Erro ao conectar com o Google Sheets. Verifique a URL do Apps Script e se ele está implantado corretamente.\n" + error.message);
             return { success: false, error: error.message };
         }
     }
 
-    // Carregar dados (questions + responses)
+    // ========== Buscar dados ==========
     async function fetchAllData() {
         try {
             const res = await callAPI("loadData");
@@ -431,11 +428,12 @@
                 return false;
             }
         } catch(e) {
+            console.error(e);
             return false;
         }
     }
 
-    // Adicionar pergunta
+    // ========== Adicionar pergunta ==========
     async function addNewQuestion(title, body, author) {
         if (!title.trim()) return alert("Digite o título da pergunta");
         if (!body.trim()) return alert("Digite o conteúdo da pergunta");
@@ -454,7 +452,7 @@
         }
     }
     
-    // Adicionar resposta (comentário)
+    // ========== Adicionar resposta ==========
     async function addResponseTo(questionId, text, isAdminResponse) {
         if (!text.trim()) return alert("Escreva sua resposta");
         if (!currentUserName || currentUserName === "") {
@@ -465,7 +463,7 @@
             questionId: questionId,
             author: currentUserName,
             text: text.trim(),
-            isAdmin: isAdminResponse
+            isAdmin: isAdminResponse ? "true" : "false"
         });
         if (result.success) {
             await refreshAndRender();
@@ -474,9 +472,10 @@
         }
     }
     
-    // Atualizar categoria (apenas admin)
+    // ========== Atualizar categoria (admin) ==========
     async function updateCategory(questionId, newCategory) {
         if (!newCategory.trim()) return;
+        if (!isAdminMode) return alert("Permissão apenas para admins.");
         const result = await callAPI("updateCategory", {
             questionId: questionId,
             category: newCategory
@@ -495,19 +494,16 @@
         else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar. Confira URL do script e permissões.</div>';
     }
     
-    // ---------- Renderização do Fórum (estilo Reddit/Classroom) ----------
+    // ========== Renderização do fórum ==========
     function renderQuestions() {
-        if (!allQuestions.length && allResponses.length===0) {
+        if (!allQuestions.length && allResponses.length === 0) {
             questionsDiv.innerHTML = `<div class="ask-card" style="text-align:center;">✨ Nenhuma pergunta ainda. Seja o primeiro a perguntar!</div>`;
             return;
         }
-        // Ordenar perguntas por timestamp decrescente (mais recente primeiro)
         const sortedQs = [...allQuestions].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
         let html = "";
         for (let q of sortedQs) {
-            // respostas desta pergunta
             const respostas = allResponses.filter(r => r.questionId === q.id).sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
-            // categoria editável (admin)
             let categoryHtml = `<span class="category-tag">📌 ${escapeHtml(q.category || "Geral")}</span>`;
             if (isAdminMode) {
                 categoryHtml = `
@@ -517,8 +513,6 @@
                         <button class="small-btn" onclick="updateCategory('${q.id}', document.getElementById('catInput-${q.id}').value)">Salvar</button>
                     </div>
                 `;
-            } else {
-                categoryHtml = `<span class="category-tag">📌 ${escapeHtml(q.category || "Geral")}</span>`;
             }
             
             html += `
@@ -562,7 +556,7 @@
         questionsDiv.innerHTML = html;
     }
     
-    // Funções globais usadas no onclick
+    // Funções globais usadas nos botões dinâmicos
     window.postResponse = async function(questionId, asAdmin) {
         const inputEl = document.getElementById(`respInput-${questionId}`);
         if (!inputEl) return;
@@ -572,7 +566,6 @@
             alert("Por favor, identifique-se no campo nome acima.");
             return;
         }
-        // adicional: se for admin e o modo admin estiver ativo, usar isAdmin = asAdmin
         let adminFlag = false;
         if (asAdmin && isAdminMode) adminFlag = true;
         else if (asAdmin && !isAdminMode) {
@@ -584,7 +577,6 @@
     };
     
     window.updateCategory = async function(questionId, newCat) {
-        if (!isAdminMode) return alert("Permissão apenas para admins.");
         await updateCategory(questionId, newCat);
     };
     
@@ -607,8 +599,6 @@
             if(m === '<') return '&lt;';
             if(m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
     
@@ -624,12 +614,12 @@
         loadStoredName();
         checkStoredAdmin();
         await refreshAndRender();
-        // Se der erro de configuração -> mostrar help
-        if (!SCRIPT_URL.includes("exemplo") && SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzExemplo123456789/exec") {
+        // Aviso de configuração quando a URL ainda é a de exemplo
+        if (SCRIPT_URL.includes("exemplo") || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzExemplo123456789/exec") {
             questionsDiv.innerHTML = `<div class="ask-card" style="background:#fff3e0;">
                 <h3>🔧 Configuração necessária</h3>
                 <p>1. Crie uma planilha Google e abra o Apps Script.<br>
-                2. Cole o script fornecido (no final da resposta).<br>
+                2. Cole o script atualizado (com via POST urlencoded).<br>
                 3. Implante como Web App (Executar como: Eu, Acesso: Qualquer um).<br>
                 4. Copie a URL e cole na variável <strong>SCRIPT_URL</strong> dentro do HTML.<br>
                 ✅ Após isso recarregue a página.</p>
@@ -640,4 +630,5 @@
     }
     init();
 </script>
-
+</body>
+</html>
