@@ -417,76 +417,67 @@
 
     // ========== API ==========
     async function callAPI(action, data = {}, file = null) {
-        try {
-            const formData = new URLSearchParams();
-            formData.append("action", action);
-            if (file) {
-                const base64 = await fileToBase64(file);
-                formData.append("fileName", file.name);
-                formData.append("contentType", file.type);
-                formData.append("fileData", base64);
-            }
-            for (let key in data) {
-                if (data.hasOwnProperty(key)) formData.append(key, data[key]);
-            }
-            const response = await fetch(SCRIPT_URL, {
-                method: "POST",
-                mode: "cors",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error(error);
-            alert("❌ Erro de conexão: " + error.message);
-            return { success: false };
-        }
-    }
-    function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function fetchAllData() {
-        const res = await callAPI("loadData");
-        if (res.success && res.data) {
-            allQuestions = res.data.questions || [];
-            allResponses = res.data.responses || [];
-            return true;
-        }
-        return false;
-    }
-
-    async function addNewQuestion(title, body, author) {
-        if (!title.trim() || !body.trim()) return alert("Preencha título e conteúdo.");
-        const res = await callAPI("addQuestion", { title, body, author, category: "Geral", status: "ativo" });
-        if (res.success) {
-            await refreshAndRender();
-            titleInput.value = "";
-            bodyInput.value = "";
-        } else alert("Erro ao publicar.");
-    }
-
-    async function addResponseWithAttachment(questionId, text, isAdmin, file) {
-        let attachmentUrl = "";
+    try {
+        const formData = new URLSearchParams();
+        formData.append("action", action);
+        
         if (file) {
-            const uploadRes = await callAPI("uploadFile", {}, file);
-            if (uploadRes.success) attachmentUrl = uploadRes.url;
-            else alert("Falha no upload, resposta salva sem anexo.");
+            console.log("Preparando upload do arquivo:", file.name, file.type, file.size);
+            const base64 = await fileToBase64(file);
+            console.log("Base64 gerado, tamanho:", base64.length);
+            formData.append("fileName", file.name);
+            formData.append("contentType", file.type);
+            formData.append("fileData", base64);
         }
-        const res = await callAPI("addResponse", {
-            questionId, author: currentUserName, text: text.trim(),
-            isAdmin: isAdmin ? "true" : "false",
-            attachment: attachmentUrl
+        
+        for (let key in data) {
+            if (data.hasOwnProperty(key)) formData.append(key, data[key]);
+        }
+        
+        console.log("Enviando requisição para:", SCRIPT_URL);
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: formData
         });
-        if (res.success) await refreshAndRender();
-        else alert("Erro ao salvar resposta.");
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        console.log("Resposta da API:", result);
+        return result;
+    } catch (error) {
+        console.error("Erro na API:", error);
+        alert("❌ Erro: " + error.message);
+        return { success: false, error: error.message };
     }
+}
+
+async function addResponseWithAttachment(questionId, text, isAdmin, file) {
+    let attachmentUrl = "";
+    if (file) {
+        console.log("Fazendo upload do arquivo...");
+        const uploadRes = await callAPI("uploadFile", {}, file);
+        if (uploadRes.success) {
+            attachmentUrl = uploadRes.url;
+            console.log("Upload OK, URL:", attachmentUrl);
+        } else {
+            console.error("Upload falhou:", uploadRes.error);
+            alert("Falha no upload do anexo: " + (uploadRes.error || "erro desconhecido"));
+            // continua sem anexo
+        }
+    }
+    const res = await callAPI("addResponse", {
+        questionId, author: currentUserName, text: text.trim(),
+        isAdmin: isAdmin ? "true" : "false",
+        attachment: attachmentUrl
+    });
+    if (res.success) {
+        await refreshAndRender();
+    } else {
+        alert("Erro ao salvar resposta: " + (res.error || ""));
+    }
+}
 
     async function updateCategory(questionId, newCategory) {
         if (!isAdminMode) return;
