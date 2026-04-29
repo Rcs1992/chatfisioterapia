@@ -3,200 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ClassConnect Fórum</title>
+    <title>ClassConnect — Fórum estilo Reddit</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', 'Inter', sans-serif;
         }
 
         body {
-            background: #eef2f5;
+            background-color: #dae0e6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        /* Header e perfil */
+        /* Header */
         .header {
-            background: white;
-            border-radius: 32px;
-            padding: 20px 28px;
-            margin-bottom: 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: white;
+            border-radius: 16px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
             align-items: center;
-            gap: 16px;
+            justify-content: space-between;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #ccc;
         }
-
         .logo h1 {
             font-size: 1.8rem;
+            font-weight: 700;
             background: linear-gradient(135deg, #1e3c72, #2b4c8a);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
-
         .user-area {
-            background: #f0f4f9;
-            padding: 8px 20px;
-            border-radius: 60px;
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 10px;
             align-items: center;
-        }
-
-        .user-name {
-            border: 1px solid #cbd5e1;
-            padding: 6px 12px;
+            flex-wrap: wrap;
+            background: #f6f7f8;
+            padding: 6px 14px;
             border-radius: 40px;
         }
-
+        .user-name {
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: white;
+        }
         button, .btn {
-            background: #2c5f8a;
+            background: #0079d3;
             border: none;
             color: white;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.1s;
+            font-size: 0.85rem;
         }
-
         button:hover {
-            background: #1e4566;
-            transform: scale(0.97);
+            background: #005a9e;
         }
-
         .btn-outline {
             background: transparent;
-            border: 1px solid #2c5f8a;
-            color: #2c5f8a;
+            border: 1px solid #0079d3;
+            color: #0079d3;
+        }
+        .btn-outline:hover {
+            background: #e5f4ff;
         }
 
         /* Tabs */
-        .tabs {
+        .tab-bar {
             display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid #dce5ec;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
             padding-bottom: 8px;
         }
         .tab-btn {
             background: none;
-            color: #4a627a;
-            font-size: 1rem;
+            color: #1a1a1b;
+            font-weight: 600;
             padding: 8px 20px;
             border-radius: 40px;
         }
         .tab-btn.active {
-            background: #2c5f8a;
+            background: #0079d3;
             color: white;
         }
 
-        /* Cards de pergunta */
-        .ask-card, .question-card {
+        /* Search */
+        .search-bar {
             background: white;
             border-radius: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 24px;
-            border: 1px solid #e2edf2;
-            transition: 0.1s;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #ccc;
         }
-        .ask-card {
-            padding: 24px;
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            padding: 8px 0;
         }
-        input, textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 20px;
-            border: 1px solid #cfdfe9;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 90px;
+        .search-bar i {
+            color: #878a8c;
         }
 
+        /* Card de nova pergunta */
+        .ask-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+        .ask-card input, .ask-card textarea {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        .ask-card textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        /* Card de pergunta (Reddit style) */
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
         .question-header {
-            padding: 20px 24px 8px 24px;
+            padding: 16px 20px 8px 20px;
         }
         .question-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0f2b3d;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1b;
+            margin-bottom: 8px;
         }
         .question-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
-            font-size: 0.75rem;
-            color: #5c6f87;
-            margin: 12px 0 8px;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: #787c7e;
+            margin-bottom: 8px;
         }
         .category-tag {
             background: #e9f0f5;
-            padding: 4px 12px;
-            border-radius: 60px;
+            padding: 2px 10px;
+            border-radius: 30px;
             font-size: 0.7rem;
+            font-weight: 500;
         }
         .question-body {
-            padding: 0 24px 12px 24px;
-            color: #2d3a4b;
-            line-height: 1.5;
+            padding: 0 20px 12px 20px;
+            color: #2c3e4e;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
         .responses-section {
-            background: #fafdff;
-            padding: 16px 24px 24px;
-            border-top: 1px solid #eef2f6;
-            border-radius: 0 0 24px 24px;
+            background: #f9fafb;
+            padding: 16px 20px 20px;
+            border-top: 1px solid #eaedef;
         }
         .response-item {
             background: white;
-            border-radius: 20px;
-            padding: 14px 18px;
-            margin-bottom: 14px;
-            border-left: 4px solid #cbdde9;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border-left: 3px solid #0079d3;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
         }
         .response-admin {
-            border-left-color: #f97316;
-            background: #fffaf5;
+            border-left-color: #ff4500;
+            background: #fff7f5;
         }
         .response-meta {
-            font-size: 0.7rem;
-            color: #6b7c93;
-            margin-bottom: 8px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: #787c7e;
+            margin-bottom: 8px;
             align-items: center;
         }
         .admin-tag {
-            background: #f9731622;
-            color: #c2410c;
-            padding: 2px 8px;
-            border-radius: 40px;
-            font-size: 0.65rem;
+            background: #ff450022;
+            color: #ff4500;
             font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.65rem;
         }
         .attachment-link {
             display: inline-block;
             margin-top: 8px;
-            font-size: 0.75rem;
-            background: #eef2ff;
+            background: #e9ecef;
             padding: 4px 12px;
             border-radius: 30px;
+            font-size: 0.7rem;
             text-decoration: none;
-            color: #1e3c72;
+            color: #0056b3;
         }
         .add-response {
             margin-top: 16px;
@@ -207,103 +235,113 @@
         .response-input-group {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
         }
         .response-input-group input {
             flex: 1;
-            margin: 0;
+            padding: 10px 14px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
         }
         .file-upload-area {
-            background: #f9fbfd;
-            border: 1px dashed #cbdde9;
+            background: #f1f3f4;
             border-radius: 20px;
             padding: 10px;
-            font-size: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
         }
         .admin-cta {
             background: #fef7e0;
-            border-radius: 20px;
-            padding: 12px 16px;
-            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 14px;
+            margin: 6px 0;
             display: flex;
+            gap: 8px;
             flex-wrap: wrap;
-            gap: 12px;
             align-items: center;
         }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #1f6392;
-        }
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.75rem;
-            color: #7f8c9a;
+        .admin-cta input {
+            width: 150px;
+            padding: 6px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
         }
         .small-btn {
             padding: 4px 12px;
             font-size: 0.7rem;
-            background: #eef2ff;
-            color: #1f3a64;
+            background: #e2e6ea;
+            color: #1a1a1b;
         }
         .archive-btn {
             background: #6c757d;
+            color: white;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.7rem;
+            color: #6c757d;
         }
         @media (max-width: 700px) {
-            body { padding: 12px; }
-            .question-title { font-size: 1.2rem; }
+            body { padding: 10px; }
+            .question-title { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">
-            <h1>📚 ClassConnect Fórum</h1>
-            <p>Perguntas, respostas e materiais</p>
-        </div>
+        <div class="logo"><h1>📚 ClassConnect</h1></div>
         <div class="user-area">
-            <span>👤 Identifique-se:</span>
+            <span>👤</span>
             <input type="text" id="userNameInput" placeholder="Seu nome" class="user-name">
-            <button id="saveUserNameBtn">✓ OK</button>
+            <button id="saveUserNameBtn">OK</button>
             <button id="adminToggleBtn" class="btn-outline">🔐 Modo Admin</button>
         </div>
     </div>
 
-    <!-- Abas: Ativo x Arquivado -->
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="active">📌 Perguntas ativas</button>
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="active">📌 Ativas</button>
         <button class="tab-btn" data-tab="archived">📦 Arquivo</button>
     </div>
 
-    <!-- Card de nova pergunta (visível apenas na aba ativa) -->
-    <div id="askCardContainer" class="ask-card">
-        <h3>➕ Faça sua pergunta</h3>
-        <input type="text" id="questionTitle" placeholder="Título da pergunta">
-        <textarea id="questionBody" placeholder="Descreva sua dúvida em detalhes..."></textarea>
-        <button id="submitQuestionBtn">📢 Publicar Pergunta</button>
+    <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por título, texto ou autor...">
     </div>
 
-    <!-- Listagem de perguntas -->
-    <div id="questionsContainer">
-        <div class="loading">📡 Carregando perguntas...</div>
+    <div id="askCardContainer" class="ask-card">
+        <h3 style="margin-bottom: 12px;">➕ Nova pergunta</h3>
+        <input type="text" id="questionTitle" placeholder="Título">
+        <textarea id="questionBody" placeholder="Escreva sua dúvida..."></textarea>
+        <button id="submitQuestionBtn">Publicar</button>
     </div>
-    <footer>🔐 Admins: categorizam, arquivam e respondem com anexos (imagens, PDFs, slides).</footer>
+
+    <div id="questionsContainer">
+        <div class="loading">📡 Carregando...</div>
+    </div>
+    <footer>🔐 Admin: categoriza, arquiva e responde com anexos (imagens/PDFs)</footer>
 </div>
 
 <script>
-    // ================= CONFIGURAÇÃO =================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUA
+    // ========== CONFIGURAÇÃO ==========
+    const SCRIPT_URL = "https://script.google.com/macros/s/SEU_ID_AQUI/exec";  // ⚠️ SUBSTITUA
     const ADMIN_PASSWORD = "admin123";
-    
+
     let allQuestions = [];
     let allResponses = [];
     let currentUserName = "";
     let isAdminMode = false;
-    let currentTab = "active"; // 'active' ou 'archived'
+    let currentTab = "active";    // active / archived
+    let searchQuery = "";
 
-    // DOM elements
+    // DOM
     const questionsDiv = document.getElementById("questionsContainer");
     const userNameInput = document.getElementById("userNameInput");
     const saveNameBtn = document.getElementById("saveUserNameBtn");
@@ -312,21 +350,26 @@
     const titleInput = document.getElementById("questionTitle");
     const bodyInput = document.getElementById("questionBody");
     const askCard = document.getElementById("askCardContainer");
+    const searchInput = document.getElementById("searchInput");
 
-    // Gerenciar abas
+    // Abas
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             currentTab = btn.dataset.tab;
-            renderQuestions();
-            // Mostrar/esconder formulário de nova pergunta na aba ativa
-            if (currentTab === "active") askCard.style.display = "block";
-            else askCard.style.display = "none";
+            renderFilteredQuestions();
+            askCard.style.display = currentTab === "active" ? "block" : "none";
         });
     });
 
-    // Nome do usuário
+    // Busca ao digitar
+    searchInput.addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderFilteredQuestions();
+    });
+
+    // Nome
     function loadStoredName() {
         const saved = localStorage.getItem("classconnect_user");
         if (saved) { currentUserName = saved; userNameInput.value = saved; }
@@ -337,20 +380,21 @@
         if (newName === "") newName = "Anônimo";
         currentUserName = newName;
         localStorage.setItem("classconnect_user", currentUserName);
-        renderQuestions();
+        renderFilteredQuestions();
         alert(`Identificado como ${currentUserName}`);
     }
     saveNameBtn.addEventListener("click", saveUserName);
 
-    // Admin mode
+    // Admin
     function enableAdminMode() {
         const pwd = prompt("🔑 Senha de Administrador:");
         if (pwd === ADMIN_PASSWORD) {
             isAdminMode = true;
             localStorage.setItem("classconnect_admin", "true");
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
-            adminToggleBtn.style.background = "#f97316";
-            renderQuestions();
+            adminToggleBtn.style.background = "#ff4500";
+            adminToggleBtn.style.color = "white";
+            renderFilteredQuestions();
         } else alert("Senha incorreta!");
     }
     function disableAdminMode() {
@@ -358,54 +402,47 @@
         localStorage.removeItem("classconnect_admin");
         adminToggleBtn.textContent = "🔐 Modo Admin";
         adminToggleBtn.style.background = "";
-        renderQuestions();
+        adminToggleBtn.style.color = "";
+        renderFilteredQuestions();
     }
     adminToggleBtn.addEventListener("click", () => isAdminMode ? disableAdminMode() : enableAdminMode());
     function checkStoredAdmin() {
         if (localStorage.getItem("classconnect_admin") === "true") {
             isAdminMode = true;
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
-            adminToggleBtn.style.background = "#f97316";
+            adminToggleBtn.style.background = "#ff4500";
+            adminToggleBtn.style.color = "white";
         }
     }
 
-    // ========== API (CORS-safe com suporte a upload de arquivo) ==========
+    // ========== API ==========
     async function callAPI(action, data = {}, file = null) {
         try {
-            let body;
-            let headers = {};
-            if (file && action === "uploadFile") {
-                // Envio multipart para upload (base64)
-                const formData = new FormData();
-                formData.append("action", action);
+            const formData = new URLSearchParams();
+            formData.append("action", action);
+            if (file) {
+                const base64 = await fileToBase64(file);
                 formData.append("fileName", file.name);
-                formData.append("fileData", await fileToBase64(file));
-                body = formData;
-                // Não setar Content-Type, o browser faz multipart boundary
-            } else {
-                const formData = new URLSearchParams();
-                formData.append("action", action);
-                for (let key in data) {
-                    if (data.hasOwnProperty(key)) formData.append(key, data[key]);
-                }
-                body = formData;
-                headers = { "Content-Type": "application/x-www-form-urlencoded" };
+                formData.append("contentType", file.type);
+                formData.append("fileData", base64);
+            }
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) formData.append(key, data[key]);
             }
             const response = await fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "cors",
-                headers: headers,
-                body: body
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return await response.json();
         } catch (error) {
             console.error(error);
-            alert("❌ Erro de conexão com o servidor.");
+            alert("❌ Erro de conexão: " + error.message);
             return { success: false };
         }
     }
-
     function fileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -435,13 +472,12 @@
         } else alert("Erro ao publicar.");
     }
 
-    async function addResponseWithAttachment(questionId, text, isAdmin, fileInput) {
+    async function addResponseWithAttachment(questionId, text, isAdmin, file) {
         let attachmentUrl = "";
-        if (fileInput && fileInput.files.length > 0) {
-            const file = fileInput.files[0];
+        if (file) {
             const uploadRes = await callAPI("uploadFile", {}, file);
             if (uploadRes.success) attachmentUrl = uploadRes.url;
-            else alert("Falha no upload do anexo, mas a resposta será salva sem ele.");
+            else alert("Falha no upload, resposta salva sem anexo.");
         }
         const res = await callAPI("addResponse", {
             questionId, author: currentUserName, text: text.trim(),
@@ -449,7 +485,7 @@
             attachment: attachmentUrl
         });
         if (res.success) await refreshAndRender();
-        else alert("Erro ao responder.");
+        else alert("Erro ao salvar resposta.");
     }
 
     async function updateCategory(questionId, newCategory) {
@@ -460,7 +496,7 @@
     }
 
     async function archiveQuestion(questionId, currentStatus) {
-        if (!isAdminMode) return alert("Apenas admin pode arquivar/restaurar.");
+        if (!isAdminMode) return alert("Apenas admin.");
         const newStatus = currentStatus === "ativo" ? "arquivado" : "ativo";
         const res = await callAPI("updateStatus", { questionId, status: newStatus });
         if (res.success) await refreshAndRender();
@@ -470,20 +506,33 @@
     async function refreshAndRender() {
         questionsDiv.innerHTML = '<div class="loading">🔄 Atualizando...</div>';
         const ok = await fetchAllData();
-        if (ok) renderQuestions();
+        if (ok) renderFilteredQuestions();
         else questionsDiv.innerHTML = '<div class="loading">⚠️ Falha ao carregar dados.</div>';
     }
 
-    function renderQuestions() {
-        let filtered = allQuestions.filter(q => {
+    // Filtro por busca + aba
+    function filterQuestions(questions) {
+        let filtered = questions.filter(q => {
             if (currentTab === "active") return q.status !== "arquivado";
             else return q.status === "arquivado";
         });
+        if (searchQuery) {
+            filtered = filtered.filter(q => 
+                q.title.toLowerCase().includes(searchQuery) ||
+                q.body.toLowerCase().includes(searchQuery) ||
+                (q.author && q.author.toLowerCase().includes(searchQuery))
+            );
+        }
+        return filtered;
+    }
+
+    function renderFilteredQuestions() {
+        const filtered = filterQuestions(allQuestions);
         if (filtered.length === 0) {
-            questionsDiv.innerHTML = `<div class="ask-card" style="text-align:center;">📭 Nenhuma pergunta ${currentTab === "active" ? "ativa" : "arquivada"}.</div>`;
+            questionsDiv.innerHTML = `<div class="ask-card" style="text-align:center;">📭 Nenhuma pergunta encontrada.</div>`;
             return;
         }
-        const sorted = filtered.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+        const sorted = [...filtered].sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
         let html = "";
         for (let q of sorted) {
             const respostas = allResponses.filter(r => r.questionId === q.id).sort((a,b) => (a.timestamp||0) - (b.timestamp||0));
@@ -493,16 +542,16 @@
                 categoryHtml = `
                     <div class="admin-cta">
                         <span>✏️ Categoria:</span>
-                        <input type="text" id="cat-${q.id}" value="${escapeHtml(q.category || "Geral")}" style="width:130px;">
-                        <button class="small-btn" onclick="updateCategory('${q.id}', document.getElementById('cat-${q.id}').value)">Salvar</button>
+                        <input type="text" class="cat-input" data-id="${q.id}" value="${escapeHtml(q.category || "Geral")}">
+                        <button class="small-btn save-cat-btn" data-id="${q.id}">Salvar</button>
                     </div>
                 `;
-                archiveBtn = `<button class="small-btn archive-btn" onclick="archiveQuestion('${q.id}', '${q.status}')">
+                archiveBtn = `<button class="small-btn archive-btn archive-toggle-btn" data-id="${q.id}" data-status="${q.status}">
                     ${q.status === "ativo" ? "📦 Arquivar" : "📂 Restaurar"}
                 </button>`;
             }
             html += `
-                <div class="question-card">
+                <div class="question-card" data-qid="${q.id}">
                     <div class="question-header">
                         <div class="question-title">📢 ${escapeHtml(q.title)}</div>
                         <div class="question-meta">
@@ -514,29 +563,28 @@
                     </div>
                     <div class="question-body">${escapeHtml(q.body).replace(/\n/g, '<br>')}</div>
                     <div class="responses-section">
-                        <div style="font-weight:600;">💬 Respostas (${respostas.length})</div>
+                        <div style="font-weight:600;">💬 Comentários (${respostas.length})</div>
                         ${respostas.map(r => `
                             <div class="response-item ${r.isAdmin ? 'response-admin' : ''}">
                                 <div class="response-meta">
                                     <strong>${escapeHtml(r.author)}</strong> • ${formatDate(r.timestamp)}
                                     ${r.isAdmin ? '<span class="admin-tag">👑 ADMIN</span>' : ''}
                                 </div>
-                                <div class="response-text">${escapeHtml(r.text).replace(/\n/g, '<br>')}</div>
+                                <div>${escapeHtml(r.text).replace(/\n/g, '<br>')}</div>
                                 ${r.attachment ? `<a href="${escapeHtml(r.attachment)}" target="_blank" class="attachment-link">📎 Baixar anexo</a>` : ''}
                             </div>
                         `).join('')}
-                        <div class="add-response" id="respForm-${q.id}">
+                        <div class="add-response">
                             <div class="response-input-group">
-                                <input type="text" id="respText-${q.id}" placeholder="Escreva sua resposta...">
-                                <button onclick="postResponse('${q.id}', false, null)">💬 Responder</button>
-                                ${isAdminMode ? `<button onclick="postResponse('${q.id}', true, null)" style="background:#f97316;">👑 Admin</button>` : ''}
+                                <input type="text" class="resp-text" data-id="${q.id}" placeholder="Escreva uma resposta...">
+                                <button class="resp-btn" data-id="${q.id}" data-admin="false">💬 Responder</button>
+                                ${isAdminMode ? `<button class="resp-btn" data-id="${q.id}" data-admin="true" style="background:#ff4500;">👑 Admin (sem anexo)</button>` : ''}
                             </div>
                             ${isAdminMode ? `
                                 <div class="file-upload-area">
-                                    <label>📎 Anexar arquivo (imagem, PDF, slide): 
-                                        <input type="file" id="file-${q.id}" accept="image/*,application/pdf,.ppt,.pptx">
-                                    </label>
-                                    <button class="small-btn" onclick="postResponseWithFile('${q.id}')">Enviar resposta com anexo</button>
+                                    <input type="text" class="resp-file-text" data-id="${q.id}" placeholder="Texto (opcional)" style="flex:1;">
+                                    <input type="file" class="resp-file" data-id="${q.id}" accept="image/*,application/pdf,.ppt,.pptx">
+                                    <button class="small-btn resp-file-btn" data-id="${q.id}">📎 Enviar com anexo</button>
                                 </div>
                             ` : ''}
                         </div>
@@ -545,42 +593,80 @@
             `;
         }
         questionsDiv.innerHTML = html;
+        attachDynamicEvents();
     }
 
-    window.postResponse = async function(qid, asAdmin, fileInputId) {
-        const textInput = document.getElementById(`respText-${qid}`);
-        if (!textInput) return;
-        const text = textInput.value.trim();
+    // Delegação de eventos para botões dinâmicos
+    function attachDynamicEvents() {
+        // Salvar categoria
+        document.querySelectorAll('.save-cat-btn').forEach(btn => {
+            btn.removeEventListener('click', saveCategoryHandler);
+            btn.addEventListener('click', saveCategoryHandler);
+        });
+        // Arquivar/Restaurar
+        document.querySelectorAll('.archive-toggle-btn').forEach(btn => {
+            btn.removeEventListener('click', archiveHandler);
+            btn.addEventListener('click', archiveHandler);
+        });
+        // Responder simples
+        document.querySelectorAll('.resp-btn').forEach(btn => {
+            btn.removeEventListener('click', responseHandler);
+            btn.addEventListener('click', responseHandler);
+        });
+        // Responder com anexo
+        document.querySelectorAll('.resp-file-btn').forEach(btn => {
+            btn.removeEventListener('click', responseFileHandler);
+            btn.addEventListener('click', responseFileHandler);
+        });
+    }
+
+    async function saveCategoryHandler(e) {
+        const btn = e.currentTarget;
+        const qid = btn.dataset.id;
+        const input = document.querySelector(`.cat-input[data-id="${qid}"]`);
+        if (input) {
+            await updateCategory(qid, input.value);
+        }
+    }
+
+    async function archiveHandler(e) {
+        const btn = e.currentTarget;
+        const qid = btn.dataset.id;
+        const status = btn.dataset.status;
+        await archiveQuestion(qid, status);
+    }
+
+    async function responseHandler(e) {
+        const btn = e.currentTarget;
+        const qid = btn.dataset.id;
+        const isAdmin = btn.dataset.admin === "true";
+        const input = document.querySelector(`.resp-text[data-id="${qid}"]`);
+        if (!input) return;
+        const text = input.value.trim();
         if (!text) return alert("Digite sua resposta.");
-        if (!currentUserName || currentUserName === "") {
-            alert("Identifique-se primeiro.");
-            return;
-        }
-        await addResponseWithAttachment(qid, text, asAdmin, null);
-        textInput.value = "";
-        if (fileInputId) document.getElementById(fileInputId).value = "";
-    };
+        if (!currentUserName) return alert("Identifique-se primeiro.");
+        await addResponseWithAttachment(qid, text, isAdmin, null);
+        input.value = "";
+    }
 
-    window.postResponseWithFile = async function(qid) {
-        const textInput = document.getElementById(`respText-${qid}`);
-        const fileInput = document.getElementById(`file-${qid}`);
-        if (!textInput) return;
-        const text = textInput.value.trim();
-        if (!text && (!fileInput || fileInput.files.length === 0)) return alert("Digite uma resposta ou selecione um arquivo.");
-        if (!currentUserName) {
-            alert("Identifique-se primeiro.");
-            return;
-        }
-        await addResponseWithAttachment(qid, text, true, fileInput);
-        textInput.value = "";
+    async function responseFileHandler(e) {
+        const btn = e.currentTarget;
+        const qid = btn.dataset.id;
+        const textInput = document.querySelector(`.resp-file-text[data-id="${qid}"]`);
+        const fileInput = document.querySelector(`.resp-file[data-id="${qid}"]`);
+        const text = textInput ? textInput.value.trim() : "";
+        const file = fileInput ? fileInput.files[0] : null;
+        if (!text && !file) return alert("Digite um texto ou selecione um arquivo.");
+        if (!currentUserName) return alert("Identifique-se primeiro.");
+        if (file && file.size > 2 * 1024 * 1024) return alert("Máximo 2MB.");
+        await addResponseWithAttachment(qid, text, true, file);
+        if (textInput) textInput.value = "";
         if (fileInput) fileInput.value = "";
-    };
+    }
 
-    window.updateCategory = async (qid, newCat) => await updateCategory(qid, newCat);
-    window.archiveQuestion = async (qid, status) => await archiveQuestion(qid, status);
-
+    // Enviar nova pergunta
     submitBtn.addEventListener("click", () => {
-        if (!currentUserName) return alert("Identifique-se antes de perguntar.");
+        if (!currentUserName) return alert("Identifique-se antes.");
         addNewQuestion(titleInput.value, bodyInput.value, currentUserName);
     });
 
@@ -598,7 +684,7 @@
         loadStoredName();
         checkStoredAdmin();
         await refreshAndRender();
-        askCard.style.display = "block";
+        askCard.style.display = currentTab === "active" ? "block" : "none";
     }
     init();
 </script>
