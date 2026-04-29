@@ -19,7 +19,6 @@
             max-width: 1000px;
             margin: 0 auto;
         }
-        /* Header */
         .header {
             background: white;
             border-radius: 16px;
@@ -38,19 +37,10 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-        .user-area {
+        .admin-area {
             display: flex;
             gap: 8px;
-            background: #f6f7f8;
-            padding: 6px 14px;
-            border-radius: 40px;
             align-items: center;
-        }
-        .user-name {
-            border: 1px solid #ccc;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: white;
         }
         button {
             background: #0079d3;
@@ -68,7 +58,6 @@
             border: 1px solid #0079d3;
             color: #0079d3;
         }
-        /* Tabs */
         .tab-bar {
             display: flex;
             gap: 8px;
@@ -86,7 +75,6 @@
             background: #0079d3;
             color: white;
         }
-        /* Busca */
         .search-bar {
             background: white;
             border-radius: 24px;
@@ -102,7 +90,6 @@
             outline: none;
             font-size: 1rem;
         }
-        /* Caixa de boas-vindas fixa */
         .welcome-card {
             background: #e9f5ff;
             border-left: 5px solid #0079d3;
@@ -131,13 +118,6 @@
         .welcome-card strong {
             color: #0079d3;
         }
-        .welcome-card .highlight {
-            background: #fff3bf;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        /* Cards de pergunta */
         .ask-card {
             background: white;
             border-radius: 16px;
@@ -156,6 +136,35 @@
         .ask-card textarea {
             min-height: 90px;
             resize: vertical;
+        }
+        .identificacao-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            background: #f6f7f8;
+            padding: 12px;
+            border-radius: 20px;
+        }
+        .identificacao-area span {
+            font-weight: 500;
+            color: #1a1a1b;
+        }
+        .nome-usuario-input {
+            flex: 2;
+            min-width: 150px;
+            margin-bottom: 0 !important;
+        }
+        .small-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .current-user {
+            background: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
         }
         .question-card {
             background: white;
@@ -299,10 +308,7 @@
 <div class="container">
     <div class="header">
         <div class="logo"><h1>📚 ClassConnect Fórum</h1></div>
-        <div class="user-area">
-            <span>👤</span>
-            <input type="text" id="userNameInput" placeholder="Seu nome" class="user-name">
-            <button id="saveUserNameBtn">OK</button>
+        <div class="admin-area">
             <button id="adminToggleBtn" class="btn-outline">🔐 Modo Admin</button>
         </div>
     </div>
@@ -317,39 +323,25 @@
         <input type="text" id="searchInput" placeholder="Buscar por título, texto ou autor...">
     </div>
 
-    <!-- MENSAGEM DE BOAS-VINDAS FIXA -->
     <div class="welcome-card">
         <h2>👋 Olá, seja bem-vindo(a) ao Fórum ClassConnect!</h2>
-        <p>Este é um espaço colaborativo para tirar dúvidas, compartilhar conhecimento e acompanhar discussões organizadas. Funciona como um <strong>fórum estilo Reddit</strong>, onde alunos podem perguntar e os administradores organizam o conteúdo.</p>
-        
-        <p><strong>📌 Como funciona?</strong></p>
+        <p>Espaço colaborativo para dúvidas e discussões. Identifique-se abaixo, faça sua pergunta e participe!</p>
         <ul>
-            <li><strong>Identifique-se</strong> no campo superior direito (nome de usuário).</li>
-            <li><strong>Faça sua pergunta</strong> no formulário abaixo da busca. Todos verão seu nome e poderão responder.</li>
-            <li><strong>Responda a qualquer pergunta</strong> usando o campo "Responder" dentro do card.</li>
-            <li><strong>Busque</strong> por palavras-chave no campo de busca – o filtro é em tempo real.</li>
-            <li><strong>Abas "Ativas" e "Arquivo"</strong>: as perguntas resolvidas ou antigas são movidas pelos administradores para o arquivo. Você pode acessar ambas.</li>
+            <li><strong>Alunos:</strong> pergunte e responda livremente.</li>
+            <li><strong>Administradores:</strong> após ativar o modo admin (senha: admin123), você pode categorizar, arquivar e responder com anexos (imagens, PDFs).</li>
+            <li>Use a <strong>busca</strong> e as <strong>abas</strong> (Ativas / Arquivo) para navegar.</li>
         </ul>
-        
-        <p><strong>👑 Para os administradores:</strong></p>
-        <ul>
-            <li>Clique em <span class="highlight">"Modo Admin"</span> e digite a senha. Aparecerão controles extras:</li>
-            <li>✏️ <strong>Editar categoria</strong> da pergunta (ex: "Dúvida", "Sugestão", "Urgente").</li>
-            <li>📦 <strong>Arquivar/Restaurar</strong> perguntas – move entre as abas.</li>
-            <li>📎 <strong>Responder com anexos</strong> (imagens, PDFs, slides) – os arquivos ficam públicos no Drive.</li>
-            <li>🔹 As respostas do admin aparecem com fundo laranja e selo "ADMIN".</li>
-        </ul>
-        
-        <p><strong>💡 Dicas de navegação:</strong><br>
-        - Use a <strong>busca</strong> para encontrar perguntas já respondidas.<br>
-        - A aba <strong>"Arquivo"</strong> guarda discussões antigas (não se perde nada).<br>
-        - Ao responder, você pode incluir links ou texto formatado (apenas texto simples por segurança).</p>
-        
-        <p><em>Participe com respeito. Vamos construir uma comunidade de aprendizado! 🚀</em></p>
     </div>
 
+    <!-- Card de nova pergunta com identificação integrada -->
     <div id="askCardContainer" class="ask-card">
         <h3>➕ Faça sua pergunta</h3>
+        <div class="identificacao-area">
+            <span>👤 Seu nome:</span>
+            <input type="text" id="userNameInput" placeholder="Digite seu nome" class="nome-usuario-input">
+            <button id="saveUserNameBtn">Identificar</button>
+            <div id="currentUserDisplay" class="current-user">Não identificado</div>
+        </div>
         <input type="text" id="questionTitle" placeholder="Título da pergunta">
         <textarea id="questionBody" placeholder="Descreva sua dúvida em detalhes..."></textarea>
         <button id="submitQuestionBtn">Publicar Pergunta</button>
@@ -363,7 +355,7 @@
 
 <script>
     // ================= CONFIGURAÇÃO =================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUA PELA SUA URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6v8IX_F8Yg_zVEfqPFS5BcQLFOhVcJWATSp08rk-l1x4o-j2xpmvlvQ0k7dkVJUHmnw/exec"; // ⚠️ SUBSTITUA
     const ADMIN_PASSWORD = "admin123";
 
     let allQuestions = [];
@@ -376,7 +368,8 @@
     // DOM
     const questionsDiv = document.getElementById("questionsContainer");
     const userNameInput = document.getElementById("userNameInput");
-    const saveNameBtn = document.getElementById("saveUserNameBtn");
+    const saveUserNameBtn = document.getElementById("saveUserNameBtn");
+    const currentUserDisplay = document.getElementById("currentUserDisplay");
     const adminToggleBtn = document.getElementById("adminToggleBtn");
     const submitBtn = document.getElementById("submitQuestionBtn");
     const titleInput = document.getElementById("questionTitle");
@@ -401,23 +394,38 @@
         renderFilteredQuestions();
     });
 
-    // Nome do usuário
+    // Nome do usuário (agora salvo e exibido)
     function loadStoredName() {
         const saved = localStorage.getItem("classconnect_user");
-        if (saved) { currentUserName = saved; userNameInput.value = saved; }
-        else { currentUserName = "Anônimo"; userNameInput.value = ""; }
+        if (saved) {
+            currentUserName = saved;
+            userNameInput.value = saved;
+            currentUserDisplay.textContent = `✅ ${saved}`;
+        } else {
+            currentUserName = "";
+            userNameInput.value = "";
+            currentUserDisplay.textContent = "Não identificado";
+        }
     }
     function saveUserName() {
         let newName = userNameInput.value.trim();
-        if (newName === "") newName = "Anônimo";
+        if (newName === "") {
+            alert("Digite um nome para identificar-se.");
+            return;
+        }
         currentUserName = newName;
         localStorage.setItem("classconnect_user", currentUserName);
+        currentUserDisplay.textContent = `✅ ${currentUserName}`;
         renderFilteredQuestions();
         alert(`Identificado como ${currentUserName}`);
     }
-    saveNameBtn.addEventListener("click", saveUserName);
+    saveUserNameBtn.addEventListener("click", saveUserName);
+    // Permitir pressionar Enter no campo nome
+    userNameInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveUserName();
+    });
 
-    // Modo Admin
+    // Modo Admin (mantido no header)
     function enableAdminMode() {
         const pwd = prompt("🔑 Senha de Administrador:");
         if (pwd === ADMIN_PASSWORD) {
@@ -425,6 +433,7 @@
             localStorage.setItem("classconnect_admin", "true");
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
             adminToggleBtn.style.background = "#ff4500";
+            adminToggleBtn.style.color = "white";
             renderFilteredQuestions();
         } else alert("Senha incorreta!");
     }
@@ -433,6 +442,7 @@
         localStorage.removeItem("classconnect_admin");
         adminToggleBtn.textContent = "🔐 Modo Admin";
         adminToggleBtn.style.background = "";
+        adminToggleBtn.style.color = "";
         renderFilteredQuestions();
     }
     adminToggleBtn.addEventListener("click", () => isAdminMode ? disableAdminMode() : enableAdminMode());
@@ -441,6 +451,7 @@
             isAdminMode = true;
             adminToggleBtn.textContent = "👑 Modo Admin ATIVO";
             adminToggleBtn.style.background = "#ff4500";
+            adminToggleBtn.style.color = "white";
         }
     }
 
@@ -667,7 +678,7 @@
         if (!input) return;
         const text = input.value.trim();
         if (!text) return alert("Digite sua resposta.");
-        if (!currentUserName) return alert("Identifique-se primeiro.");
+        if (!currentUserName) return alert("Identifique-se primeiro (campo de nome ao lado de 'Fazer pergunta').");
         await addResponseWithAttachment(qid, text, isAdmin, null);
         input.value = "";
     }
@@ -688,7 +699,10 @@
     }
 
     submitBtn.addEventListener("click", () => {
-        if (!currentUserName) return alert("Identifique-se antes.");
+        if (!currentUserName) {
+            alert("Identifique-se antes de perguntar (digite seu nome e clique em 'Identificar').");
+            return;
+        }
         addNewQuestion(titleInput.value, bodyInput.value, currentUserName);
     });
 
